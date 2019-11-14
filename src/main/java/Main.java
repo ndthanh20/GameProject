@@ -1,4 +1,5 @@
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -26,47 +27,50 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 
 public class Main extends Application {
+    private Enemy enemy = new Enemy();
+    private int[][] map;
     public void start(Stage primaryStage) throws Exception {
         GameController gameController = new GameController();
-        int[][] map = new int[][]{
-                {0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,1,1,1,1,1,1,0,0,0,0},
-                {0,0,1,0,0,0,0,1,0,0,0,0},
-                {1,1,1,0,0,0,0,1,0,0,0,0},
-                {0,0,0,0,0,0,0,1,0,0,0,0},
-                {0,0,0,0,0,0,0,1,1,1,1,1},
-                {0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0}
+        map = new int[][]{
+                {0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,1,1,1,1,1,1,0,0,0,0,0},
+                {0,0,1,0,0,0,0,1,0,0,0,0,0},
+                {1,1,1,0,0,0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,1,1,1,1,1,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0}
         };
 
 
-        ImageView temp = new ImageView();
-        Image image = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\Background.PNG"));
+        final ImageView temp = new ImageView();
+        Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\Background.PNG"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(1000);
         imageView.setFitWidth(1200);
 
-        Image image2 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\java\\Circle.png"));
+        Image image2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\java\\Circle.PNG"));
 
-        ImageView imageView2 = new ImageView(image2);
+        enemy.setEnemyImage(new ImageView(image2));
 
-        imageView2.setX(300);
-        imageView2.setY(500);
+        enemy.getEnemyImage().setY(500);
 
 
         //Path path = new Path();
 
         //path.
-        Pane group = new Pane(imageView);
-        int x=0;
+        final Group group = new Group(imageView);
 
+        /** Initialize path for enemy
+         *
+         */
         for(int i=0; i<=9; i++){
             for(int j=0; j<=11; j++)
                 if(map[i][j]==1)
                 {
-                    Image image3 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\GravelTile.png"));
+                    Image image3 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\GravelTile.png"));
                     ImageView imageView3 = new ImageView(image3);
 
                     imageView3.setX(j*100);
@@ -75,11 +79,14 @@ public class Main extends Application {
                 }
             System.out.println();
         }
+        enemy.setPath(map);
+        group.getChildren().addAll(enemy.getEnemyImage());
+
         Scene scene = new Scene(group);
         //basic sniper//
 
-        Image imageBasicSniper = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\BasicTowerGraphic.png"));
-        ImageView imageViewBasicSniper = new ImageView(imageBasicSniper);
+        final Image imageBasicSniper = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\BasicTowerGraphic.png"));
+        final ImageView imageViewBasicSniper = new ImageView(imageBasicSniper);
         imageViewBasicSniper.setFitHeight(130);
         imageViewBasicSniper.setFitWidth(80);
         imageViewBasicSniper.setX(910);
@@ -89,31 +96,20 @@ public class Main extends Application {
 
 
         //drag and drop
-        /*
+
             imageViewBasicSniper.setOnDragDetected(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
                     Dragboard db = imageViewBasicSniper.startDragAndDrop(TransferMode.ANY);
-<<<<<<< HEAD
                     ClipboardContent content = new ClipboardContent();
                     content.putImage(imageBasicSniper);
                     db.setContent(content);
                     event.consume();
                 }
             });
-=======
-
-                    ClipboardContent content = new ClipboardContent();
-
-                    content.putImage(imageBasicSniper);
-                    db.setContent(content);
-
-                    event.consume();
-                }
-            });
 
 
->>>>>>> 5d18ab670a05cfb62ae55687f8ec8cfb9bc65f68
+
         imageView.setOnDragOver(new EventHandler<DragEvent>() {
                 @Override
                 public void handle(DragEvent event) {
@@ -121,10 +117,7 @@ public class Main extends Application {
                     if ( db.hasImage()) {
                         event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 5d18ab670a05cfb62ae55687f8ec8cfb9bc65f68
                     event.consume();
                 }
             });
@@ -139,34 +132,39 @@ public class Main extends Application {
                         temp.setY(event.getY());
                         group.getChildren().addAll(temp);
                         success = true;
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 5d18ab670a05cfb62ae55687f8ec8cfb9bc65f68
                     }
                     event.setDropCompleted(success);
                     System.out.println("dropped");
                     event.consume();
                 }
             });
-        imageView.setOnDragEntered((DragEvent event) ->{
+        imageView.setOnDragEntered( (DragEvent event) ->{
             if (event.getGestureSource() != temp && event.getDragboard().hasImage()){
                 temp.setImage(imageViewBasicSniper.getImage());
             }
             event.consume();
         });
-        */
+
 
 
         primaryStage.setResizable(true);
         primaryStage.setTitle("Tower Defense");
         primaryStage.setScene(scene);
+        primaryStage.setHeight(1000);
+        primaryStage.setWidth(1200);
         primaryStage.show();
 
+        System.out.println(primaryStage.getWidth() + " " + primaryStage.getHeight());
 
 
-        gameController.start();
+        //gameController.start();
+        new AnimationTimer() {
+
+            public void handle(long now) {
+                if(!enemy.getPathFinished())
+                enemy.updateLocation();
+            }
+        }.start();
     }
     public static void main(String[] args){
         Application.launch(args);

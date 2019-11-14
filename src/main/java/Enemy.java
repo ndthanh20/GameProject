@@ -4,6 +4,7 @@ public class Enemy extends GameEntity {
     private int[][] path;
     private boolean moveX= true;
     private boolean upY=true;
+    private boolean pathFinished=false;
     private ImageView enemyImage;
 
     public void setPath(int[][] path){
@@ -14,6 +15,9 @@ public class Enemy extends GameEntity {
     }
     public ImageView getEnemyImage(){
         return enemyImage;
+    }
+    public boolean getPathFinished(){
+        return pathFinished;
     }
 
     public void updateLocation(){
@@ -38,7 +42,8 @@ public class Enemy extends GameEntity {
                     }
 
                 }
-
+            System.out.println(enemyImage.getX());
+            if(enemyImage.getX()==1100) pathFinished=true;
         }
         else{
             if(upY){
