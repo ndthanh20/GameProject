@@ -94,12 +94,26 @@ public class Main extends Application {
                 @Override
                 public void handle(MouseEvent event) {
                     Dragboard db = imageViewBasicSniper.startDragAndDrop(TransferMode.ANY);
+<<<<<<< HEAD
                     ClipboardContent content = new ClipboardContent();
                     content.putImage(imageBasicSniper);
                     db.setContent(content);
                     event.consume();
                 }
             });
+=======
+
+                    ClipboardContent content = new ClipboardContent();
+
+                    content.putImage(imageBasicSniper);
+                    db.setContent(content);
+
+                    event.consume();
+                }
+            });
+
+
+>>>>>>> 5d18ab670a05cfb62ae55687f8ec8cfb9bc65f68
         imageView.setOnDragOver(new EventHandler<DragEvent>() {
                 @Override
                 public void handle(DragEvent event) {
@@ -107,6 +121,10 @@ public class Main extends Application {
                     if ( db.hasImage()) {
                         event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5d18ab670a05cfb62ae55687f8ec8cfb9bc65f68
                     event.consume();
                 }
             });
@@ -121,6 +139,11 @@ public class Main extends Application {
                         temp.setY(event.getY());
                         group.getChildren().addAll(temp);
                         success = true;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 5d18ab670a05cfb62ae55687f8ec8cfb9bc65f68
                     }
                     event.setDropCompleted(success);
                     System.out.println("dropped");
