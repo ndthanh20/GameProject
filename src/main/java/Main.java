@@ -46,12 +46,12 @@ public class Main extends Application {
 
 
         final ImageView temp = new ImageView();
-        Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\Background.PNG"));
+        Image image = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\Background.PNG"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(1000);
         imageView.setFitWidth(1200);
 
-        Image image2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\java\\Circle.PNG"));
+        Image image2 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\java\\Circle.PNG"));
 
         enemy.setEnemyImage(new ImageView(image2));
 
@@ -70,7 +70,7 @@ public class Main extends Application {
             for(int j=0; j<=11; j++)
                 if(map[i][j]==1)
                 {
-                    Image image3 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\GravelTile.png"));
+                    Image image3 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\GravelTile.png"));
                     ImageView imageView3 = new ImageView(image3);
 
                     imageView3.setX(j*100);
@@ -85,65 +85,18 @@ public class Main extends Application {
         Scene scene = new Scene(group);
         //basic sniper//
 
-        final Image imageBasicSniper = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\BasicTowerGraphic.png"));
+        final Image imageBasicSniper = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\BasicTowerGraphic.png"));
         final ImageView imageViewBasicSniper = new ImageView(imageBasicSniper);
-        imageViewBasicSniper.setFitHeight(130);
-        imageViewBasicSniper.setFitWidth(80);
         imageViewBasicSniper.setX(910);
         imageViewBasicSniper.setY(130);
         group.getChildren().addAll(imageViewBasicSniper);
 
-
-
-        //drag and drop
-
-            imageViewBasicSniper.setOnDragDetected(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    Dragboard db = imageViewBasicSniper.startDragAndDrop(TransferMode.ANY);
-                    ClipboardContent content = new ClipboardContent();
-                    content.putImage(imageBasicSniper);
-                    db.setContent(content);
-                    event.consume();
-                }
-            });
-
-
-
-        imageView.setOnDragOver(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent event) {
-                    Dragboard db = event.getDragboard();
-                    if ( db.hasImage()) {
-                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                    }
-
-                    event.consume();
-                }
-            });
-        imageView.setOnDragDropped(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent event) {
-                    Dragboard db = event.getDragboard();
-                    boolean success = false;
-                    if (db.hasImage()) {
-                        temp.setImage(imageViewBasicSniper.getImage());
-                        temp.setX(event.getX());
-                        temp.setY(event.getY());
-                        group.getChildren().addAll(temp);
-                        success = true;
-                    }
-                    event.setDropCompleted(success);
-                    System.out.println("dropped");
-                    event.consume();
-                }
-            });
-        imageView.setOnDragEntered( (DragEvent event) ->{
-            if (event.getGestureSource() != temp && event.getDragboard().hasImage()){
-                temp.setImage(imageViewBasicSniper.getImage());
-            }
-            event.consume();
-        });
+        //test tower 2 //
+        Image imageTower2 = new Image(new FileInputStream("D:\\Java Int2204\\test\\src\\sample\\images\\SniperTowerGraphic.png"));
+        ImageView imageViewTower2 = new ImageView(imageTower2);
+        imageViewTower2.setX(1057);
+        imageViewTower2.setY(141);
+        group.getChildren().addAll(imageViewTower2);
 
 
 
@@ -155,9 +108,9 @@ public class Main extends Application {
         primaryStage.show();
 
         System.out.println(primaryStage.getWidth() + " " + primaryStage.getHeight());
-
-
-        //gameController.start();
+        dragAndDrop(imageViewBasicSniper,imageView,group);
+        dragAndDrop(imageViewTower2,imageView,group);
+        //gameController.start();s
         new AnimationTimer() {
 
             public void handle(long now) {
@@ -168,5 +121,60 @@ public class Main extends Application {
     }
     public static void main(String[] args){
         Application.launch(args);
+    }
+    //drag and drop
+    void dragAndDrop(final ImageView source, final ImageView target, Group group){
+        source.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+
+                ClipboardContent content = new ClipboardContent();
+
+                content.putImage(source.getImage());
+                db.setContent(content);
+
+                event.consume();
+            }
+        });
+        ImageView temp = new ImageView();
+        target.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                if (db.hasImage()) {
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
+
+                event.consume();
+            }
+        });
+
+
+        target.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasImage()) {
+                    temp.setImage(source.getImage());
+                    temp.setX(event.getX()-65);
+                    temp.setY(event.getY()-40);
+                    group.getChildren().addAll(temp);
+                    success = true;
+                    db = null;
+
+
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            }
+        });
+        target.setOnDragEntered((DragEvent event) -> {
+            if (event.getGestureSource() != temp && event.getDragboard().hasImage()) {
+                temp.setImage(source.getImage());
+            }
+            event.consume();
+        });
     }
 }
