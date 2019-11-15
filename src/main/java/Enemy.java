@@ -25,8 +25,8 @@ public class Enemy extends GameEntity {
             enemyImage.setX(enemyImage.getX()+1);
             int X=(int) (enemyImage.getX());
             int Y=(int) (enemyImage.getY());
-            if((X+1)%100!=0)
-                if(path[(int)(Y)/100][(int)((X+1)/100)+1]==0)
+            if((X+1)%100== 1 )
+                if(path[(int)(Y)/100][(int)((X+1)/100)+1] != 1)
                 {
 
                     moveX=false;
@@ -51,7 +51,7 @@ public class Enemy extends GameEntity {
                 int X=(int) (enemyImage.getX());
                 int Y=(int) (enemyImage.getY());
                 if((Y-1)%100!=0)
-                    if(path[(int)(Y-1)/100][(int)(X)/100]==0){
+                    if(path[(int)(Y-1)/100][(int)(X)/100] !=1){
                         moveX=true;
                     }
 
@@ -61,7 +61,7 @@ public class Enemy extends GameEntity {
                 int X=(int) (enemyImage.getX());
                 int Y=(int) (enemyImage.getY());
                 if((Y+1)%100!=0)
-                    if(path[(int)((Y+1)/100)+1][(int)(X)/100]==0)
+                    if(path[(int)((Y+1)/100)+1][(int)(X)/100]!= 1)
                     {
                         moveX=true;
                         //System.out.println(enemyImage.getX()+" "+enemyImage.getY());
