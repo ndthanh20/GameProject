@@ -6,6 +6,13 @@ public class Enemy extends GameEntity {
     private boolean upY=true;
     private boolean pathFinished=false;
     private ImageView enemyImage;
+    private int healthPoints;                   // Determines if the monster is still alive
+    private boolean isDead;
+
+    public Enemy(int healthPoints){
+        this.healthPoints=healthPoints;
+        isDead=false;
+    }
 
     public void setPath(int[][] path){
         this.path=path;
@@ -20,6 +27,13 @@ public class Enemy extends GameEntity {
         return pathFinished;
     }
 
+    public double getCenterX(){
+        return enemyImage.getX()+50;
+    }
+    public double getCenterY(){
+        return enemyImage.getY()+50;
+    }
+
     public void updateLocation(){
         if(moveX){
             enemyImage.setX(enemyImage.getX()+1);
@@ -32,17 +46,14 @@ public class Enemy extends GameEntity {
                     moveX=false;
                     if(path[(int)(Y/100)+1][(int)(X+1)/100]==1)
                     {
-                        System.out.println(X+" "+Y+" "+upY);
                         upY=false;
                     }
                     if(path[(int)(Y/100)-1][(int)(X+1)/100]==1)
                     {
-                        System.out.println(X+" "+Y+" "+upY);
                         upY=true;
                     }
 
                 }
-            System.out.println(enemyImage.getX());
             if(enemyImage.getX()==1100) pathFinished=true;
         }
         else{
@@ -69,6 +80,18 @@ public class Enemy extends GameEntity {
             }
         }
 
+    }
+    public void takeDamage(int damage){
+        healthPoints = healthPoints - damage;
+        if (healthPoints <= 0){
+            isDead = true;
+            pathFinished = false;
+        }
+        System.out.println(healthPoints);
+    }
+    public boolean isDead(){
+        //System.out.println(healthPoints);
+        return isDead;
     }
 
 }
