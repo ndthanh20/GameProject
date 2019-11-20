@@ -55,8 +55,7 @@ public class Main extends Application {
         Scene scene = new Scene(group);
         //basic sniper//
 
-        Image imageSelect = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\TileSelectGraphic.png"));
-        ImageView imageViewSelect = new ImageView(imageSelect);
+
 
 
         /*scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -77,7 +76,7 @@ public class Main extends Application {
         primaryStage.setResizable(true);
         primaryStage.setTitle("Tower Defense");
         primaryStage.setScene(gameField.getGameScene());
-        primaryStage.setHeight(1000);
+        primaryStage.setHeight(1050);
         primaryStage.setWidth(1312);
         primaryStage.show();
 
