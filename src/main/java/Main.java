@@ -56,8 +56,6 @@ public class Main extends Application {
         //basic sniper//
 
 
-
-
         /*scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -71,16 +69,20 @@ public class Main extends Application {
         });*/
 
 
-        gameField.initialize();
+        gameField.startGame();
+        primaryStage.setScene(gameField.getGameScene());
+
 
         primaryStage.setResizable(true);
         primaryStage.setTitle("Tower Defense");
-        primaryStage.setScene(gameField.getGameScene());
+
         primaryStage.setHeight(1050);
         primaryStage.setWidth(1312);
         primaryStage.show();
 
-        gameField.start();
+        GameStage.setStage(primaryStage);
+
+
 
     }
 

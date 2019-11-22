@@ -98,6 +98,10 @@ public class Enemy extends GameEntity {
         //System.out.println(healthPoints);
         return isDead;
     }
+
+    public int getHealthPoints(){
+        return healthPoints;
+    }
     public boolean isPathFinished(){
         return isPathFinished;
     }

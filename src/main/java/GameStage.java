@@ -16,13 +16,12 @@ import javafx.util.Duration;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class GameStage extends Application {
-    private ImageView imageView2;
-    private Path path= new Path();
-
-    public void start(Stage primaryStage) throws Exception {
+public class GameStage {
+    private static Stage gameStage;
+    public static void setStage(Stage stage){
+        gameStage=stage;
     }
-    public static void main(String[] args)  {
-        launch(args);
+    public static Stage getStage(){
+        return gameStage;
     }
 }

@@ -13,19 +13,35 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
 
+
+import java.awt.*;
 import java.io.FileInputStream;
+
+import javafx.scene.control.Button;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static javafx.scene.paint.Color.YELLOW;
+
 public class GameField {
-    //private Enemy enemy = new Enemy(3);
-    private ArrayList<Tower> towers = new ArrayList<>();
+
+    private ArrayList<Tower> towers = new ArrayList<Tower>();
     private Scene gameScene;
     private Group group = new Group();
     private Map map = new Map();
+    private boolean checkSelect = true;
+    private ArrayList<ImageView> children = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
+
+    private int score;
+
+    private int index;
 
     public GameField() throws FileNotFoundException {
 
@@ -45,16 +61,52 @@ public class GameField {
         }
     }
 
+    public void startGame() throws FileNotFoundException {
+        Image imageGame = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\StartGameGraphic.png"));
+        ImageView imageViewGame = new ImageView(imageGame);
+
+        imageViewGame.setFitHeight(1050);
+        imageViewGame.setFitWidth(1312);
+
+
+        group = new Group(imageViewGame);
+
+        Image imageStartGame = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\StartGameButton.png"));
+
+        ImageView imageViewStartGame = new ImageView(imageStartGame);
+
+        Button startGame = new Button();
+        startGame.setGraphic(imageViewStartGame);
+        startGame.setLayoutX(450);
+        startGame.setLayoutY(500);
+
+        group.getChildren().add(startGame);
+
+
+        startGame.setOnAction(event -> {
+            try {
+                initialize();
+                GameStage.getStage().setScene(gameScene);
+                start();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+        gameScene = new Scene(group);
+    }
+
     public void initialize() throws FileNotFoundException {
         Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\Background.png"));
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(1000);
+        imageView.setFitHeight(1050);
         imageView.setFitWidth(1312);
 
         group = new Group(imageView);
 
         loadMap();
 
+        Image imageSelect = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\TileSelectGraphic.png"));
+        ImageView imageViewSelect = new ImageView(imageSelect);
 
         Image imageBasicSniper = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\BasicTowerGraphic.png"));
         ImageView imageViewBasicSniper = new ImageView(imageBasicSniper);
@@ -83,14 +135,115 @@ public class GameField {
         imageViewTower3.setFitWidth(100);
         group.getChildren().addAll(imageViewTower3);
 
-        //handle drag and drop//
-        imageViewBasicSniper.setOnMousePressed(event -> dragAndDrop(imageViewBasicSniper, imageView, group));
-        imageViewTower2.setOnMousePressed(event -> dragAndDrop(imageViewTower2, imageView, group));
-        imageViewTower3.setOnMousePressed(event -> dragAndDrop(imageViewTower3, imageView, group));
+        //image StartWave
+        Image imageNextWaveStart = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\nextWaveActive.png"));
+        ImageView imageViewNextWaveStart = new ImageView(imageNextWaveStart);
+        imageViewNextWaveStart.setX(700);
+        imageViewNextWaveStart.setY(920);
+        imageViewNextWaveStart.setFitHeight(80);
+        imageViewNextWaveStart.setFitWidth(200);
+        group.getChildren().addAll(imageViewNextWaveStart);
 
-        //initEnemy();
+
+        // image currency
+        Image imageCurrency = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\CurrencyGraphic.png"));
+        ImageView imageViewCurrency = new ImageView(imageCurrency);
+        imageViewCurrency.setX(0);
+        imageViewCurrency.setY(920);
+        imageViewCurrency.setFitHeight(80);
+        imageViewCurrency.setFitWidth(100);
+        group.getChildren().add(imageViewCurrency);
+
+        score=0;
+
+        Text money = new Text(100,980,String.valueOf(score));
+        money.setFill(YELLOW);
+        money.setFont(Font.font(java.awt.Font.SERIF, 50));
+
+        group.getChildren().addAll(money);
+
+
+
+        imageViewNextWaveStart.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                group.getChildren().remove(imageViewNextWaveStart);
+            }
+        });
+        //handle drag and drop//
+        imageViewBasicSniper.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dragAndDrop(imageViewBasicSniper, imageView, group);
+            }
+        });
+        imageViewTower2.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dragAndDrop(imageViewTower2, imageView, group);
+            }
+        });
+        imageViewTower3.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dragAndDrop(imageViewTower3, imageView, group);
+            }
+        });
+
+        //handle select Tower
+        group.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                group.getChildren().removeAll(imageViewSelect);
+
+                for (int i = 0; i < children.size(); i++) {
+                    if (event.getTarget().equals(children.get(i))) {
+                        imageViewSelect.setX(event.getX() - (event.getX() % 100));
+                        imageViewSelect.setY(event.getY() - (event.getY() % 100));
+                        imageViewSelect.setFitHeight(100);
+                        imageViewSelect.setFitWidth(100);
+                        checkSelect = true;
+                        group.getChildren().addAll(imageViewSelect);
+                        index = group.getChildren().indexOf(children.get(i));
+                        return;
+                    }
+                }
+                if ((1120 <= event.getX() && event.getX() <= 1253) && (event.getY() >= 439 && event.getY() <= 548)) {
+                    if (checkSelect) {
+                        group.getChildren().remove(index);
+                        checkSelect = false;
+                    }
+                }
+                if ((event.getX() <= 1120) || (event.getY() <= 439 && event.getX() >= 1120) ||
+                        (event.getX() >= 1120 && event.getY() >= 548)) {
+                    checkSelect = false;
+                }
+            }
+
+        });
+
+        //handle drag and drop//
+        imageViewBasicSniper.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dragAndDrop(imageViewBasicSniper, imageView, group);
+            }
+        });
+        imageViewTower2.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dragAndDrop(imageViewTower2, imageView, group);
+            }
+        });
+        imageViewTower3.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dragAndDrop(imageViewTower3, imageView, group);
+            }
+        });
 
         gameScene = new Scene(group);
+
     }
 
     public void creatMonster(int health) throws FileNotFoundException {
@@ -100,47 +253,62 @@ public class GameField {
 
     }
 
+
     //drag and drop
-    public void dragAndDrop(final ImageView source, final ImageView target, Group group) {
-        source.setOnDragDetected(event -> {
-            Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+    void dragAndDrop(final ImageView source, final ImageView target, Group group) {
+        source.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Dragboard db = source.startDragAndDrop(TransferMode.ANY);
 
-            ClipboardContent content = new ClipboardContent();
+                ClipboardContent content = new ClipboardContent();
 
-            content.putImage(source.getImage());
-            db.setContent(content);
-            event.consume();
+                content.putImage(source.getImage());
+                db.setContent(content);
+                event.consume();
+            }
         });
 
         ImageView temp = new ImageView();
-        target.setOnDragOver(event -> {
-            Dragboard db = event.getDragboard();
-            if (db.hasImage()) {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            }
+        target.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                if (db.hasImage()) {
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
 
-            event.consume();
+                event.consume();
+            }
         });
-        target.setOnDragDropped(event -> {
-            Dragboard db = event.getDragboard();
-            boolean success = false;
-            if (db.hasImage()) {
-                temp.setImage(source.getImage());
-                temp.setX(event.getX() - (event.getX() % 100));
-                temp.setY(event.getY() - (event.getY() % 100));
-                temp.setFitHeight(100);
-                temp.setFitWidth(100);
-                Tower tower = new Tower(temp.getX(), temp.getY());
-                tower.setTowerImageView(temp);
-                addTower(tower);
+        target.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasImage()) {
+                    if (map.getMap()[1][2] == 2) {
+                        return;
+                    }
+                    if (event.getX() <= 900 && event.getY() <= 800) {
+                        temp.setImage(source.getImage());
+                        temp.setX(event.getX() - (event.getX() % 100));
+                        temp.setY(event.getY() - (event.getY() % 100));
+                        temp.setFitHeight(100);
+                        temp.setFitWidth(100);
+                        Tower tower = new Tower(temp.getX(), temp.getY());
+                        tower.setTowerImageView(temp);
+                        addTower(tower);
+                        group.getChildren().addAll(temp);
+                        success = true;
+                        children.add(temp);
+                    }
 
-                group.getChildren().addAll(temp);
-                success = true;
 
-
+                }
+                event.setDropCompleted(success);
+                event.consume();
             }
-            event.setDropCompleted(success);
-            event.consume();
         });
 
     }
@@ -165,52 +333,51 @@ public class GameField {
 
         group.getChildren().addAll(enemy.getEnemyImage());
 
+
     }
 
     public Scene getGameScene() {
         return gameScene;
     }
 
-    public void removeEnemy(Enemy enemy){
-        if(enemy.isPathFinished()){
+    public void removeEnemy(Enemy enemy) {
+        if (enemy.isPathFinished()) {
             /**
              *
              */
-        }
-        else{
-            /**
-             *
-             */
+        } else {
+
+            score++;
         }
         enemy.getEnemyImage().setVisible(false);
         enemies.remove(enemy);
     }
 
-    private void updateLocation(){
-        if(!enemies.isEmpty()){
+    private void updateLocation() {
+        if (!enemies.isEmpty()) {
             Iterator<Enemy> enemiesIterator = enemies.iterator();
             Enemy enemy;
-            while(enemiesIterator.hasNext()) {
+            while (enemiesIterator.hasNext()) {
                 enemy = enemiesIterator.next();
                 enemy.updateLocation();
                 createBullets(enemy);
-                if(enemy.isPathFinished()){
+                if (enemy.isPathFinished()) {
                     removeEnemy(enemy);
                 }
             }
         }
     }
 
-    private void createBullets(Enemy enemy) {
+    public void createBullets(Enemy enemy) {
         Path bulletPath;
         PathTransition animation;
-
-
         for (Tower tower : towers) {
             for (Bullet bullet : tower.getBulletList()) {
                 // Create animation path
 
                 // Create animation path
+
+                //System.out.println(enemies.indexOf(enemy));
 
                 bulletPath = new Path(new MoveTo(bullet.getStartX(), bullet.getStartY()));
                 bulletPath.getElements().add(new LineTo(bullet.getEndX(), bullet.getEndY()));
@@ -218,18 +385,23 @@ public class GameField {
 
 
                 // When the animation finishes, hide it and remove it
-                animation.setOnFinished(actionEvent -> {
+                animation.setOnFinished(new EventHandler<ActionEvent>() {
 
-                    PathTransition finishedAnimation = (PathTransition) actionEvent.getSource();
-                    Bullet finishedBullet = (Bullet) finishedAnimation.getNode();
+                    @Override
 
-                    // Hide and remove from gui
-                    finishedBullet.setVisible(false);
-                    group.getChildren().remove(bullet);
+                    public void handle(ActionEvent actionEvent) {
 
-                    // Remove monster if they are dead
-                    if (enemy.isDead()) {
-                        removeEnemy(finishedBullet.getTarget());
+                        PathTransition finishedAnimation = (PathTransition) actionEvent.getSource();
+                        Bullet finishedBullet = (Bullet) finishedAnimation.getNode();
+
+                        // Hide and remove from gui
+                        finishedBullet.setVisible(false);
+                        group.getChildren().remove(bullet);
+
+                        // Remove monster if they are dead
+                        if (enemy.isDead()) {
+                            removeEnemy(finishedBullet.getTarget());
+                        }
                     }
                 });
                 group.getChildren().add(bullet);
@@ -239,16 +411,15 @@ public class GameField {
         }
     }
 
-    void start() {
+    public void start() throws FileNotFoundException {
 
         //initialize();
 
         final LongProperty secondUpdate = new SimpleLongProperty(0);
         final LongProperty fpstimer = new SimpleLongProperty(0);
-
-
+        //gameController.start();s
         new AnimationTimer() {
-            int timer = 2 ;
+            int timer = 2;
 
             public void handle(long now) {
 
@@ -262,38 +433,25 @@ public class GameField {
                         }
                     } else if (timer <= 0) {
                         //game.setLevel(game.getLevel() + 1);
-                        timer = 24;
+                        timer = 29;
                     }
                 }
 
                 updateLocation();
 
-                /*for (Tower tower : towers)
-                    for(Enemy enemy : enemies)
-                    if (tower.isShot(enemy)) {
-                        if (tower.getTime() % 100 == 0) {
-                            tower.creatBullet(enemy);
-                            enemy.takeDamage(1);
-                            //if(enemy.isDead()) stop();
-                        }
-                        tower.updateTime();
-                    }*/
 
-                for(Enemy enemy : enemies)
-                    {for(Tower tower: towers)
-                        if(tower.getBulletList().size()==0)
-                        {
-                            if(tower.isShot(enemy)){
-                                if(tower.getTime()%100==0){
+
+                for (Tower tower : towers)
+                    if (tower.getBulletList().size() == 0) {
+                        for (Enemy enemy : enemies)
+                            if (tower.isShot(enemy)) {
+                                if (tower.getTime() % 100 == 0) {
                                     tower.creatBullet(enemy);
                                     enemy.takeDamage(1);
                                 }
                                 tower.updateTime();
                             }
-                        }
                     }
-
-
 
 
                 //System.out.println(i);
@@ -305,6 +463,5 @@ public class GameField {
             }
         }.start();
     }
-
 
 }
