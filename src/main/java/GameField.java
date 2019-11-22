@@ -17,13 +17,15 @@ import javafx.util.Duration;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GameField {
-    private Enemy enemy = new Enemy(3);
-    private ArrayList<Tower> towers = new ArrayList<Tower>();
+    //private Enemy enemy = new Enemy(3);
+    private ArrayList<Tower> towers = new ArrayList<>();
     private Scene gameScene;
-    private Group group= new Group();
+    private Group group = new Group();
     private Map map = new Map();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
 
     public GameField() throws FileNotFoundException {
 
@@ -82,80 +84,63 @@ public class GameField {
         group.getChildren().addAll(imageViewTower3);
 
         //handle drag and drop//
-        imageViewBasicSniper.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewBasicSniper, imageView, group);
-            }
-        });
-        imageViewTower2.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewTower2, imageView, group);
-            }
-        });
-        imageViewTower3.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewTower3, imageView, group);
-            }
-        });
+        imageViewBasicSniper.setOnMousePressed(event -> dragAndDrop(imageViewBasicSniper, imageView, group));
+        imageViewTower2.setOnMousePressed(event -> dragAndDrop(imageViewTower2, imageView, group));
+        imageViewTower3.setOnMousePressed(event -> dragAndDrop(imageViewTower3, imageView, group));
 
-        initEnemy();
+        //initEnemy();
 
         gameScene = new Scene(group);
     }
 
+    public void creatMonster(int health) throws FileNotFoundException {
+        Enemy enemy = new Enemy(health);
+        enemies.add(enemy);
+        initEnemy(enemy);
+
+    }
+
     //drag and drop
-    void dragAndDrop(final ImageView source, final ImageView target, Group group) {
-        source.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+    public void dragAndDrop(final ImageView source, final ImageView target, Group group) {
+        source.setOnDragDetected(event -> {
+            Dragboard db = source.startDragAndDrop(TransferMode.ANY);
 
-                ClipboardContent content = new ClipboardContent();
+            ClipboardContent content = new ClipboardContent();
 
-                content.putImage(source.getImage());
-                db.setContent(content);
-                event.consume();
-            }
+            content.putImage(source.getImage());
+            db.setContent(content);
+            event.consume();
         });
 
         ImageView temp = new ImageView();
-        target.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-                if (db.hasImage()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
-
-                event.consume();
+        target.setOnDragOver(event -> {
+            Dragboard db = event.getDragboard();
+            if (db.hasImage()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
+
+            event.consume();
         });
-        target.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-                boolean success = false;
-                if (db.hasImage()) {
-                    temp.setImage(source.getImage());
-                    temp.setX(event.getX() - (event.getX() % 100));
-                    temp.setY(event.getY() - (event.getY() % 100));
-                    temp.setFitHeight(100);
-                    temp.setFitWidth(100);
-                    Tower tower = new Tower(temp.getX(), temp.getY());
-                    tower.setTowerImageView(temp);
-                    addTower(tower);
+        target.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasImage()) {
+                temp.setImage(source.getImage());
+                temp.setX(event.getX() - (event.getX() % 100));
+                temp.setY(event.getY() - (event.getY() % 100));
+                temp.setFitHeight(100);
+                temp.setFitWidth(100);
+                Tower tower = new Tower(temp.getX(), temp.getY());
+                tower.setTowerImageView(temp);
+                addTower(tower);
 
-                    group.getChildren().addAll(temp);
-                    success = true;
+                group.getChildren().addAll(temp);
+                success = true;
 
 
-                }
-                event.setDropCompleted(success);
-                event.consume();
             }
+            event.setDropCompleted(success);
+            event.consume();
         });
 
     }
@@ -164,8 +149,8 @@ public class GameField {
         towers.add(tower);
     }
 
-    public void initEnemy() throws FileNotFoundException {
-        Image image2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\java\\Circle1.PNG"));
+    public void initEnemy(Enemy enemy) throws FileNotFoundException {
+        Image image2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\java\\Circle.PNG"));
 
         enemy.setEnemyImage(new ImageView(image2));
 
@@ -186,37 +171,65 @@ public class GameField {
         return gameScene;
     }
 
-    public void createBullets(Enemy enemy) throws FileNotFoundException {
+    public void removeEnemy(Enemy enemy){
+        if(enemy.isPathFinished()){
+            /**
+             *
+             */
+        }
+        else{
+            /**
+             *
+             */
+        }
+        enemy.getEnemyImage().setVisible(false);
+        enemies.remove(enemy);
+    }
+
+    private void updateLocation(){
+        if(!enemies.isEmpty()){
+            Iterator<Enemy> enemiesIterator = enemies.iterator();
+            Enemy enemy;
+            while(enemiesIterator.hasNext()) {
+                enemy = enemiesIterator.next();
+                enemy.updateLocation();
+                createBullets(enemy);
+                if(enemy.isPathFinished()){
+                    removeEnemy(enemy);
+                }
+            }
+        }
+    }
+
+    private void createBullets(Enemy enemy) {
         Path bulletPath;
         PathTransition animation;
+
+
         for (Tower tower : towers) {
             for (Bullet bullet : tower.getBulletList()) {
                 // Create animation path
 
                 // Create animation path
+
                 bulletPath = new Path(new MoveTo(bullet.getStartX(), bullet.getStartY()));
                 bulletPath.getElements().add(new LineTo(bullet.getEndX(), bullet.getEndY()));
                 animation = new PathTransition(Duration.millis(300), bulletPath, bullet);
 
 
                 // When the animation finishes, hide it and remove it
-                animation.setOnFinished(new EventHandler<ActionEvent>() {
+                animation.setOnFinished(actionEvent -> {
 
-                    @Override
+                    PathTransition finishedAnimation = (PathTransition) actionEvent.getSource();
+                    Bullet finishedBullet = (Bullet) finishedAnimation.getNode();
 
-                    public void handle(ActionEvent actionEvent) {
-                        System.out.println("1");
-                        PathTransition finishedAnimation = (PathTransition) actionEvent.getSource();
-                        Bullet finishedBullet = (Bullet) finishedAnimation.getNode();
+                    // Hide and remove from gui
+                    finishedBullet.setVisible(false);
+                    group.getChildren().remove(bullet);
 
-                        // Hide and remove from gui
-                        finishedBullet.setVisible(false);
-                        group.getChildren().remove(bullet);
-
-                        // Remove monster if they are dead
-                        if(enemy.isDead()){
-                            enemy.getEnemyImage().setVisible(false);
-                        }
+                    // Remove monster if they are dead
+                    if (enemy.isDead()) {
+                        removeEnemy(finishedBullet.getTarget());
                     }
                 });
                 group.getChildren().add(bullet);
@@ -225,35 +238,62 @@ public class GameField {
             tower.getBulletList().clear();
         }
     }
-    public void start() throws FileNotFoundException {
+
+    void start() {
 
         //initialize();
 
         final LongProperty secondUpdate = new SimpleLongProperty(0);
         final LongProperty fpstimer = new SimpleLongProperty(0);
-        //gameController.start();s
+
+
         new AnimationTimer() {
-            int i = 0;
+            int timer = 2 ;
 
             public void handle(long now) {
-                if (!enemy.getPathFinished())
-                    enemy.updateLocation();
-                try {
-                    createBullets(enemy);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                for (Tower tower : towers)
-                    if (tower.isShot(enemy))
-                    {
-                        if(tower.getTime()%100==0)
-                            {
-                                tower.creatBullet(enemy);
-                                enemy.takeDamage(1);
-                                //if(enemy.isDead()) stop();
-                            }
-                        tower.updateTime();
+
+                if (now / 1000000000 != secondUpdate.get()) {
+                    timer--;
+                    if (timer > 19) {
+                        try {
+                            creatMonster(3);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (timer <= 0) {
+                        //game.setLevel(game.getLevel() + 1);
+                        timer = 24;
                     }
+                }
+
+                updateLocation();
+
+                /*for (Tower tower : towers)
+                    for(Enemy enemy : enemies)
+                    if (tower.isShot(enemy)) {
+                        if (tower.getTime() % 100 == 0) {
+                            tower.creatBullet(enemy);
+                            enemy.takeDamage(1);
+                            //if(enemy.isDead()) stop();
+                        }
+                        tower.updateTime();
+                    }*/
+
+                for(Enemy enemy : enemies)
+                    {for(Tower tower: towers)
+                        if(tower.getBulletList().size()==0)
+                        {
+                            if(tower.isShot(enemy)){
+                                if(tower.getTime()%100==0){
+                                    tower.creatBullet(enemy);
+                                    enemy.takeDamage(1);
+                                }
+                                tower.updateTime();
+                            }
+                        }
+                    }
+
+
 
 
                 //System.out.println(i);

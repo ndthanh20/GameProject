@@ -8,10 +8,12 @@ public class Enemy extends GameEntity {
     private ImageView enemyImage;
     private int healthPoints;                   // Determines if the monster is still alive
     private boolean isDead;
+    private boolean isPathFinished;
 
     public Enemy(int healthPoints){
         this.healthPoints=healthPoints;
         isDead=false;
+        isPathFinished=false;
     }
 
     public void setPath(int[][] path){
@@ -40,17 +42,20 @@ public class Enemy extends GameEntity {
             int X=(int) (enemyImage.getX());
             int Y=(int) (enemyImage.getY());
             if((X+1)%100== 1 )
-                if(path[(int)(Y)/100][(int)((X+1)/100)+1] != 1)
+                if(path[Y /100][((X+1)/100) +1] != 1)
                 {
 
                     moveX=false;
-                    if(path[(int)(Y/100)+1][(int)(X+1)/100]==1)
+                    if(path[(Y/100) +1][(X+1) /100]==1)
                     {
                         upY=false;
                     }
-                    if(path[(int)(Y/100)-1][(int)(X+1)/100]==1)
+                    if(path[(Y/100) -1][(X+1) /100]==1)
                     {
                         upY=true;
+                    }
+                    if(path[(Y/100) +1][(X+1) /100]!=1&&path[(Y/100) -1][(X+1) /100]!=1){
+                        isPathFinished=true;
                     }
 
                 }
@@ -62,7 +67,7 @@ public class Enemy extends GameEntity {
                 int X=(int) (enemyImage.getX());
                 int Y=(int) (enemyImage.getY());
                 if((Y-1)%100!=0)
-                    if(path[(int)(Y-1)/100][(int)(X)/100] !=1){
+                    if(path[(Y-1) /100][X /100] !=1){
                         moveX=true;
                     }
 
@@ -72,7 +77,7 @@ public class Enemy extends GameEntity {
                 int X=(int) (enemyImage.getX());
                 int Y=(int) (enemyImage.getY());
                 if((Y+1)%100!=0)
-                    if(path[(int)((Y+1)/100)+1][(int)(X)/100]!= 1)
+                    if(path[((Y+1)/100) +1][X /100]!= 1)
                     {
                         moveX=true;
                         //System.out.println(enemyImage.getX()+" "+enemyImage.getY());
@@ -87,11 +92,14 @@ public class Enemy extends GameEntity {
             isDead = true;
             pathFinished = false;
         }
-        System.out.println(healthPoints);
+
     }
     public boolean isDead(){
         //System.out.println(healthPoints);
         return isDead;
+    }
+    public boolean isPathFinished(){
+        return isPathFinished;
     }
 
 }
