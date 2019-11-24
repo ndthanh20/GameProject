@@ -9,13 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
-import javafx.scene.paint.Color;
+
 
 
 import java.awt.*;
@@ -51,7 +53,7 @@ public class GameField {
         for (int i = 0; i <= 9; i++) {
             for (int j = 0; j <= 11; j++)
                 if (map.getMap()[i][j] == 1) {
-                    Image image3 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\GravelTile.png"));
+                    Image image3 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\GravelTile.png"));
                     javafx.scene.image.ImageView imageView3 = new javafx.scene.image.ImageView(image3);
 
                     imageView3.setX(j * 100);
@@ -62,7 +64,7 @@ public class GameField {
     }
 
     public void startGame() throws FileNotFoundException {
-        Image imageGame = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\StartGameGraphic.png"));
+        Image imageGame = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\StartGameGraphic.png"));
         ImageView imageViewGame = new ImageView(imageGame);
 
         imageViewGame.setFitHeight(1050);
@@ -71,7 +73,7 @@ public class GameField {
 
         group = new Group(imageViewGame);
 
-        Image imageStartGame = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\StartGameButton.png"));
+        Image imageStartGame = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\StartGameButton.png"));
 
         ImageView imageViewStartGame = new ImageView(imageStartGame);
 
@@ -96,7 +98,7 @@ public class GameField {
     }
 
     public void initialize() throws FileNotFoundException {
-        Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\Background.png"));
+        Image image = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\Background.png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(1050);
         imageView.setFitWidth(1312);
@@ -105,10 +107,10 @@ public class GameField {
 
         loadMap();
 
-        Image imageSelect = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\TileSelectGraphic.png"));
+        Image imageSelect = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\TileSelectGraphic.png"));
         ImageView imageViewSelect = new ImageView(imageSelect);
 
-        Image imageBasicSniper = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\BasicTowerGraphic.png"));
+        Image imageBasicSniper = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\BasicTowerGraphic.png"));
         ImageView imageViewBasicSniper = new ImageView(imageBasicSniper);
         imageViewBasicSniper.setX(955);
         imageViewBasicSniper.setY(140);
@@ -118,7 +120,7 @@ public class GameField {
 
 
         //image tower 2 //
-        Image imageTower2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\SniperTowerGraphic.png"));
+        Image imageTower2 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\SniperTowerGraphic.png"));
         ImageView imageViewTower2 = new ImageView(imageTower2);
         imageViewTower2.setX(1140);
         imageViewTower2.setY(140);
@@ -127,7 +129,7 @@ public class GameField {
         group.getChildren().addAll(imageViewTower2);
 
         //image tower3
-        Image imageTower3 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\FreezeTowerGraphic.png"));
+        Image imageTower3 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\FreezeTowerGraphic.png"));
         ImageView imageViewTower3 = new ImageView(imageTower3);
         imageViewTower3.setX(956);
         imageViewTower3.setY(297);
@@ -136,7 +138,7 @@ public class GameField {
         group.getChildren().addAll(imageViewTower3);
 
         //image StartWave
-        Image imageNextWaveStart = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\nextWaveActive.png"));
+        Image imageNextWaveStart = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\nextWaveActive.png"));
         ImageView imageViewNextWaveStart = new ImageView(imageNextWaveStart);
         imageViewNextWaveStart.setX(700);
         imageViewNextWaveStart.setY(920);
@@ -146,7 +148,7 @@ public class GameField {
 
 
         // image currency
-        Image imageCurrency = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\CurrencyGraphic.png"));
+        Image imageCurrency = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\images\\CurrencyGraphic.png"));
         ImageView imageViewCurrency = new ImageView(imageCurrency);
         imageViewCurrency.setX(0);
         imageViewCurrency.setY(920);
@@ -318,21 +320,19 @@ public class GameField {
     }
 
     public void initEnemy(Enemy enemy) throws FileNotFoundException {
-        Image image2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\java\\Circle.PNG"));
+
+        Image image2 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\main\\java\\Circle.PNG"));
 
         enemy.setEnemyImage(new ImageView(image2));
-
         enemy.getEnemyImage().setY(500);
 
+        enemy.setHealthBar(new Rectangle(60,10, Color.GREEN));
         //enemy.getEnemyImage().setFitWidth(50);
 
         //enemy.getEnemyImage().setFitHeight(50);
 
-
         enemy.setPath(map.getMap());
-
         group.getChildren().addAll(enemy.getEnemyImage());
-
 
     }
 
@@ -448,6 +448,13 @@ public class GameField {
                                 if (tower.getTime() % 100 == 0) {
                                     tower.creatBullet(enemy);
                                     enemy.takeDamage(1);
+                                    if (enemy.isDead() == false){
+                                        group.getChildren().addAll(enemy.getHealthBar());
+                                    }
+                                    if (enemy.isDead()){
+                                        group.getChildren().remove(enemy.getHealthBar());
+                                    }
+
                                 }
                                 tower.updateTime();
                             }

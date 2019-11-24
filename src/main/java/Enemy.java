@@ -1,4 +1,11 @@
+import javafx.beans.property.DoublePropertyBase;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import java.awt.*;
 
 public class Enemy extends GameEntity {
     private int[][] path;
@@ -9,13 +16,14 @@ public class Enemy extends GameEntity {
     private int healthPoints;                   // Determines if the monster is still alive
     private boolean isDead;
     private boolean isPathFinished;
+    private boolean isAttached = false;
+    private Rectangle healthBar ;
 
     public Enemy(int healthPoints){
         this.healthPoints=healthPoints;
         isDead=false;
         isPathFinished=false;
     }
-
     public void setPath(int[][] path){
         this.path=path;
     }
@@ -28,7 +36,12 @@ public class Enemy extends GameEntity {
     public boolean getPathFinished(){
         return pathFinished;
     }
-
+    public void setHealthBar(Rectangle rectangle){
+        this.healthBar = rectangle;
+    }
+    public Rectangle getHealthBar(){
+        return this.healthBar;
+    }
     public double getCenterX(){
         return enemyImage.getX()+50;
     }
@@ -84,16 +97,29 @@ public class Enemy extends GameEntity {
                     }
             }
         }
+        drawHealthBar();
 
     }
     public void takeDamage(int damage){
         healthPoints = healthPoints - damage;
-        if (healthPoints <= 0){
+        isAttached = true;
+        if (healthPoints == 0){
             isDead = true;
             pathFinished = false;
         }
 
     }
+    public void drawHealthBar(){
+        if (this.getHealthPoints() == 0 ){
+            this.setHealthBar(null);
+        }
+        if (this.getHealthPoints() > 0  ) { ;
+            healthBar.setX(enemyImage.getX());
+            healthBar.setY(enemyImage.getY() - 20);
+            return;
+        }
+    }
+
     public boolean isDead(){
         //System.out.println(healthPoints);
         return isDead;
