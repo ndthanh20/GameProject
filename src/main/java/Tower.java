@@ -2,7 +2,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class Tower extends GameTile {
@@ -32,8 +31,8 @@ public class Tower extends GameTile {
     }
 
     public void creatBullet(Enemy enemy){
-        //bulletList.add(new Bullet(enemy,(int)x,(int)y, Color.BLACK));
-        bulletList.add(new BulletLine(enemy,(int) x,(int) y,Color.BLUE));
+        bulletList.add(new Bullet(enemy,(int)x,(int)y, Color.BLACK));
+        //bulletList.add(new BulletLine(enemy,(int) x,(int) y,Color.BLUE));
     }
     public double getExectX(){
         return x+50;

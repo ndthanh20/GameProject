@@ -1,8 +1,6 @@
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
 
 public class BulletLine extends Line {
     private Enemy target;     // The target of the attack
@@ -21,8 +19,6 @@ public class BulletLine extends Line {
 
     }
 
-    public BulletLine(Enemy enemy, int x, int y) {
-    }
 
     public Enemy getTarget(){
         return target;
