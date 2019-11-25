@@ -330,7 +330,7 @@ public class GameField {
             while (enemiesIterator.hasNext()) {
                 enemy = enemiesIterator.next();
                 enemy.updateLocation();
-                //createBullets(enemy);
+                createBullets(enemy);
                 if (enemy.isPathFinished()) {
                     removeEnemy(enemy);
                 }
