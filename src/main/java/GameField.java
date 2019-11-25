@@ -5,10 +5,12 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -36,12 +38,13 @@ public class GameField {
     private Group group = new Group();
     private Map map = new Map();
     private boolean checkSelect = true;
-    private ArrayList<ImageView> children = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
 
     private int score;
 
     private int index;
+
+    Text money;
 
     public GameField() throws FileNotFoundException {
 
@@ -96,12 +99,22 @@ public class GameField {
     }
 
     public void initialize() throws FileNotFoundException {
-        Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\Background.png"));
+        Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\Background1.png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(1050);
         imageView.setFitWidth(1312);
 
         group = new Group(imageView);
+
+        Image towerLabel = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\main\\images\\BuyTowerTitle.PNG"));
+        ImageView towerLabelView = new ImageView(towerLabel);
+
+        towerLabelView.setX(950);
+
+        towerLabelView.setFitWidth(300);
+        towerLabelView.setFitHeight(100);
+
+        group.getChildren().add(towerLabelView);
 
         loadMap();
 
@@ -154,99 +167,67 @@ public class GameField {
         imageViewCurrency.setFitWidth(100);
         group.getChildren().add(imageViewCurrency);
 
-        score=0;
+        score = 0;
 
-        Text money = new Text(100,980,String.valueOf(score));
+        money = new Text(100, 980, String.valueOf(score));
         money.setFill(YELLOW);
         money.setFont(Font.font(java.awt.Font.SERIF, 50));
+
 
         group.getChildren().addAll(money);
 
 
+        imageViewNextWaveStart.setOnMousePressed(event -> group.getChildren().remove(imageViewNextWaveStart));
 
-        imageViewNextWaveStart.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                group.getChildren().remove(imageViewNextWaveStart);
-            }
-        });
         //handle drag and drop//
-        imageViewBasicSniper.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewBasicSniper, imageView, group);
-            }
-        });
-        imageViewTower2.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewTower2, imageView, group);
-            }
-        });
-        imageViewTower3.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewTower3, imageView, group);
-            }
-        });
+        imageViewBasicSniper.setOnMousePressed(event -> dragAndDrop(imageViewBasicSniper, imageView, group));
+
+        imageViewTower2.setOnMousePressed(event -> dragAndDrop(imageViewTower2, imageView, group));
+
+        imageViewTower3.setOnMousePressed(event -> dragAndDrop(imageViewTower3, imageView, group));
 
         //handle select Tower
-        group.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                group.getChildren().removeAll(imageViewSelect);
+        group.setOnMousePressed(event -> {
+            group.getChildren().removeAll(imageViewSelect);
 
-                for (int i = 0; i < children.size(); i++) {
-                    if (event.getTarget().equals(children.get(i))) {
-                        imageViewSelect.setX(event.getX() - (event.getX() % 100));
-                        imageViewSelect.setY(event.getY() - (event.getY() % 100));
-                        imageViewSelect.setFitHeight(100);
-                        imageViewSelect.setFitWidth(100);
-                        checkSelect = true;
-                        group.getChildren().addAll(imageViewSelect);
-                        index = group.getChildren().indexOf(children.get(i));
-                        return;
-                    }
-                }
-                if ((1120 <= event.getX() && event.getX() <= 1253) && (event.getY() >= 439 && event.getY() <= 548)) {
-                    if (checkSelect) {
-                        group.getChildren().remove(index);
-                        checkSelect = false;
-                    }
-                }
-                if ((event.getX() <= 1120) || (event.getY() <= 439 && event.getX() >= 1120) ||
-                        (event.getX() >= 1120 && event.getY() >= 548)) {
-                    checkSelect = false;
+            for (int i = 0; i < towers.size(); i++) {
+                if (event.getTarget().equals(towers.get(i).getTowerImageView())) {
+
+                    imageViewSelect.setX(event.getX() - (event.getX() % 100));
+                    imageViewSelect.setY(event.getY() - (event.getY() % 100));
+                    imageViewSelect.setFitHeight(100);
+                    imageViewSelect.setFitWidth(100);
+
+                    checkSelect = true;
+                    group.getChildren().addAll(imageViewSelect);
+                    index = i;
+
+                    return;
                 }
             }
+            if ((1120 <= event.getX() && event.getX() <= 1253) && (event.getY() >= 439 && event.getY() <= 548)) {
+                if (checkSelect) {
 
+                    towers.get(index).getTowerImageView().setVisible(false);
+                    towers.remove(index);
+
+                    checkSelect = false;
+                }
+            } else {
+                checkSelect = false;
+            }
         });
 
         //handle drag and drop//
-        imageViewBasicSniper.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewBasicSniper, imageView, group);
-            }
-        });
-        imageViewTower2.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewTower2, imageView, group);
-            }
-        });
-        imageViewTower3.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dragAndDrop(imageViewTower3, imageView, group);
-            }
-        });
+        imageViewBasicSniper.setOnMousePressed(event -> dragAndDrop(imageViewBasicSniper, imageView, group));
+        imageViewTower2.setOnMousePressed(event -> dragAndDrop(imageViewTower2, imageView, group));
+        imageViewTower3.setOnMousePressed(event -> dragAndDrop(imageViewTower3, imageView, group));
 
         gameScene = new Scene(group);
 
     }
 
-    public void creatMonster(int health) throws FileNotFoundException {
+    public void createEnemy(int health) throws FileNotFoundException {
         Enemy enemy = new Enemy(health);
         enemies.add(enemy);
         initEnemy(enemy);
@@ -256,59 +237,49 @@ public class GameField {
 
     //drag and drop
     void dragAndDrop(final ImageView source, final ImageView target, Group group) {
-        source.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+        source.setOnDragDetected(event -> {
+            Dragboard db = source.startDragAndDrop(TransferMode.ANY);
 
-                ClipboardContent content = new ClipboardContent();
+            ClipboardContent content = new ClipboardContent();
 
-                content.putImage(source.getImage());
-                db.setContent(content);
-                event.consume();
-            }
+            content.putImage(source.getImage());
+            db.setContent(content);
+            event.consume();
         });
 
         ImageView temp = new ImageView();
-        target.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-                if (db.hasImage()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
-
-                event.consume();
+        target.setOnDragOver(event -> {
+            Dragboard db = event.getDragboard();
+            if (db.hasImage()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
+
+            event.consume();
         });
-        target.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-                boolean success = false;
-                if (db.hasImage()) {
-                    if (map.getMap()[1][2] == 2) {
-                        return;
-                    }
-                    if (event.getX() <= 900 && event.getY() <= 800) {
-                        temp.setImage(source.getImage());
-                        temp.setX(event.getX() - (event.getX() % 100));
-                        temp.setY(event.getY() - (event.getY() % 100));
-                        temp.setFitHeight(100);
-                        temp.setFitWidth(100);
-                        Tower tower = new Tower(temp.getX(), temp.getY());
-                        tower.setTowerImageView(temp);
-                        addTower(tower);
-                        group.getChildren().addAll(temp);
-                        success = true;
-                        children.add(temp);
-                    }
-
-
+        target.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasImage()) {
+                if (map.getMap()[1][2] == 2) {
+                    return;
                 }
-                event.setDropCompleted(success);
-                event.consume();
+                if (event.getX() <= 900 && event.getY() <= 800) {
+                    temp.setImage(source.getImage());
+                    temp.setX(event.getX() - (event.getX() % 100));
+                    temp.setY(event.getY() - (event.getY() % 100));
+                    temp.setFitHeight(100);
+                    temp.setFitWidth(100);
+                    Tower tower = new Tower(temp.getX(), temp.getY());
+                    tower.setTowerImageView(temp);
+                    addTower(tower);
+                    group.getChildren().addAll(temp);
+                    success = true;
+                }
+
+
             }
+            event.setDropCompleted(success);
+            event.consume();
         });
 
     }
@@ -322,7 +293,7 @@ public class GameField {
 
         enemy.setEnemyImage(new ImageView(image2));
 
-        enemy.getEnemyImage().setY(500);
+        enemy.getEnemyImage().setY(850);
 
         //enemy.getEnemyImage().setFitWidth(50);
 
@@ -346,7 +317,6 @@ public class GameField {
              *
              */
         } else {
-
             score++;
         }
         enemy.getEnemyImage().setVisible(false);
@@ -360,7 +330,7 @@ public class GameField {
             while (enemiesIterator.hasNext()) {
                 enemy = enemiesIterator.next();
                 enemy.updateLocation();
-                createBullets(enemy);
+                //createBullets(enemy);
                 if (enemy.isPathFinished()) {
                     removeEnemy(enemy);
                 }
@@ -381,37 +351,34 @@ public class GameField {
 
                 bulletPath = new Path(new MoveTo(bullet.getStartX(), bullet.getStartY()));
                 bulletPath.getElements().add(new LineTo(bullet.getEndX(), bullet.getEndY()));
-                animation = new PathTransition(Duration.millis(300), bulletPath, bullet);
+                animation = new PathTransition(Duration.millis(200), bulletPath, bullet);
 
 
                 // When the animation finishes, hide it and remove it
-                animation.setOnFinished(new EventHandler<ActionEvent>() {
+                animation.setOnFinished(actionEvent -> {
 
-                    @Override
+                    PathTransition finishedAnimation = (PathTransition) actionEvent.getSource();
+                    Bullet finishedBullet = (Bullet) finishedAnimation.getNode();
 
-                    public void handle(ActionEvent actionEvent) {
+                    // Hide and remove from gui
+                    finishedBullet.setVisible(false);
+                    group.getChildren().remove(bullet);
 
-                        PathTransition finishedAnimation = (PathTransition) actionEvent.getSource();
-                        Bullet finishedBullet = (Bullet) finishedAnimation.getNode();
-
-                        // Hide and remove from gui
-                        finishedBullet.setVisible(false);
-                        group.getChildren().remove(bullet);
-
-                        // Remove monster if they are dead
-                        if (enemy.isDead()) {
-                            removeEnemy(finishedBullet.getTarget());
-                        }
+                    // Remove monster if they are dead
+                    if (enemy.isDead()) {
+                        removeEnemy(finishedBullet.getTarget());
                     }
                 });
                 group.getChildren().add(bullet);
                 animation.play();
+
             }
             tower.getBulletList().clear();
         }
     }
 
-    public void start() throws FileNotFoundException {
+
+    public void start() {
 
         //initialize();
 
@@ -427,7 +394,8 @@ public class GameField {
                     timer--;
                     if (timer > 19) {
                         try {
-                            creatMonster(3);
+                            if(timer%2==0)
+                            createEnemy(3);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -439,25 +407,24 @@ public class GameField {
 
                 updateLocation();
 
-
-
-                for (Tower tower : towers)
-                    if (tower.getBulletList().size() == 0) {
-                        for (Enemy enemy : enemies)
-                            if (tower.isShot(enemy)) {
-                                if (tower.getTime() % 100 == 0) {
-                                    tower.creatBullet(enemy);
-                                    enemy.takeDamage(1);
-                                }
-                                tower.updateTime();
+                for (Tower tower : towers) {
+                    for (Enemy enemy : enemies)
+                        if (tower.isShot(enemy)) {
+                            if (tower.getTime() % 100 == 0&&tower.getBulletList().size()==0) {
+                                tower.creatBullet(enemy);
+                                enemy.takeDamage(1);
                             }
-                    }
-
+                        }
+                    tower.updateTime();
+                    System.out.println(tower.getTime());
+                }
 
                 //System.out.println(i);
 
                 fpstimer.set(now / 10000000);
                 secondUpdate.set(now / 1000000000);
+
+                money.setText(String.valueOf(score));
 
                 //if(enemy.getCenterY()==350&&enemy.getCenterX()>450) stop();
             }

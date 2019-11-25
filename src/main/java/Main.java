@@ -82,8 +82,6 @@ public class Main extends Application {
 
         GameStage.setStage(primaryStage);
 
-
-
     }
 
     public static void main(String[] args) {

@@ -32,7 +32,8 @@ public class Tower extends GameTile {
     }
 
     public void creatBullet(Enemy enemy){
-        bulletList.add(new Bullet(enemy,(int)x,(int)y, Color.BLACK));
+        //bulletList.add(new Bullet(enemy,(int)x,(int)y, Color.BLACK));
+        bulletList.add(new BulletLine(enemy,(int) x,(int) y,Color.BLUE));
     }
     public double getExectX(){
         return x+50;
