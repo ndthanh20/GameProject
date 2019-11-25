@@ -39,6 +39,9 @@ public class Enemy extends GameEntity {
     public void setHealthBar(Rectangle rectangle){
         this.healthBar = rectangle;
     }
+    public void setHealthBar(double widht){
+        this.healthBar.setWidth(widht);
+    }
     public Rectangle getHealthBar(){
         return this.healthBar;
     }
@@ -97,7 +100,7 @@ public class Enemy extends GameEntity {
                     }
             }
         }
-        drawHealthBar();
+        setXYHealthBar();
 
     }
     public void takeDamage(int damage){
@@ -109,16 +112,24 @@ public class Enemy extends GameEntity {
         }
 
     }
-    public void drawHealthBar(){
-        if (this.getHealthPoints() == 0 ){
-            this.setHealthBar(null);
-        }
+    public void setXYHealthBar(){
         if (this.getHealthPoints() > 0  ) { ;
             healthBar.setX(enemyImage.getX());
             healthBar.setY(enemyImage.getY() - 20);
             return;
         }
     }
+    public void drawHealthBar(){
+        if (this.getHealthPoints() == 1){
+            this.setHealthBar(10);
+            return;
+        }
+        if (this.getHealthPoints() == 2) {
+            this.setHealthBar(20);
+            return;
+        }
+    }
+
 
     public boolean isDead(){
         //System.out.println(healthPoints);
