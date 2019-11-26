@@ -13,7 +13,7 @@ public class NormalTower extends Tower {
     public NormalTower(double x, double y) throws FileNotFoundException {
         super(x, y);
         setShootRange(200);
-        setDamage(2);
+        setDamage(20);
         setShootSpeed(100);
         setImageView();
         setCost(20);

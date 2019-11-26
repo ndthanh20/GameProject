@@ -11,7 +11,7 @@ public class SniperTower extends Tower {
 
     public SniperTower(double x, double y) throws FileNotFoundException {
         super(x, y);
-        setDamage(3);
+        setDamage(30);
         setShootRange(250);
         setShootSpeed(150);
         setImageView();

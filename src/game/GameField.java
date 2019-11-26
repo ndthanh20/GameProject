@@ -32,8 +32,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import static javafx.scene.paint.Color.GREEN;
-import static javafx.scene.paint.Color.YELLOW;
+import static javafx.scene.paint.Color.*;
 
 public class GameField {
 
@@ -53,7 +52,7 @@ public class GameField {
 
     private int index;
     private ImageView imageViewNextWaveStart, AutoPlay;
-    boolean  autoplay = false;
+    boolean autoplay = false;
 
     public GameField() {
 
@@ -215,9 +214,9 @@ public class GameField {
             }
             if ((1120 <= event.getX() && event.getX() <= 1253) && (event.getY() >= 439 && event.getY() <= 548)) {
                 if (checkSelect) {
-                    if(towers.get(index) instanceof SniperTower) Money+=25;
-                    if (towers.get(index) instanceof  NormalTower) Money+=15;
-                    if(towers.get(index) instanceof MachineGunTower) Money+=10;
+                    if (towers.get(index) instanceof SniperTower) Money += 25;
+                    if (towers.get(index) instanceof NormalTower) Money += 15;
+                    if (towers.get(index) instanceof MachineGunTower) Money += 10;
                     towers.get(index).getImageView().setVisible(false);
                     towers.remove(index);
                     child.remove(index);
@@ -229,8 +228,12 @@ public class GameField {
                 }
             } else checkSelect = false;
             if ((858 <= event.getX() && event.getX() <= 985) && (event.getY() >= 439 && event.getY() <= 548)) {
-                towers.get(index).setDamage(towers.get(index).getDamage()+2);
-                towers.get(index).setShootRange(towers.get(index).getShootRange()+100);
+                towers.get(index).setDamage(towers.get(index).getDamage() + 2);
+                towers.get(index).setShootRange(towers.get(index).getShootRange() + 100);
+                if (towers.get(index) instanceof SniperTower && Money >= 40) Money -= 40;
+                if (towers.get(index) instanceof NormalTower && Money >= 30) Money -= 30;
+                if (towers.get(index) instanceof MachineGunTower && Money >= 50) Money -= 50;
+
             }
         });
 
@@ -248,19 +251,19 @@ public class GameField {
         Enemy enemy = null;
         switch (a) {
             case 1: {
-                enemy = new NormalEnemy(3);
+                enemy = new NormalEnemy(40);
                 break;
             }
             case 2: {
-                enemy = new TankerEnemy(5);
+                enemy = new TankerEnemy(60);
                 break;
             }
             case 3: {
-                enemy = new SmallerEnemy(1);
+                enemy = new SmallerEnemy(20);
                 break;
             }
             case 4: {
-                enemy = new BossEnemy(10);
+                enemy = new BossEnemy(80);
                 break;
             }
             default:
@@ -370,9 +373,7 @@ public class GameField {
 
     public void removeEnemy(Enemy enemy) {
         if (enemy.isPathFinished()) {
-            /**
-             *
-             */
+
         } else {
             Money += enemy.getValue();
         }
@@ -413,7 +414,7 @@ public class GameField {
                         Money -= tower.getCost();
                         addTower(tower);
                         group.getChildren().addAll(tower.getImageView());
-                        road.getMap()[j][i]=0;
+                        road.getMap()[j][i] = 0;
                     }
                 }
             }
@@ -481,14 +482,46 @@ public class GameField {
                 if (now / 1000000000 != secondUpdate.get()) {
                     timer--;
                     if (timer > 19) {
-                        try {
-                            //if(timer%2==0)
-                            createEnemy(1);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                        if (timer % 2 == 0)
+                            try {
+                                if (GameStage.getGameLevel() % 4 == 1)
+                                    if (timer != 2)
+                                        createEnemy(1);
+                                    else {
+                                        createEnemy(1);
+                                        enemies.get(enemies.size() - 1).setHealthPoints(10);
+                                        enemies.get(enemies.size() - 1).setSpeed(enemies.get(enemies.size() - 1).getSpeed() + 2);
+                                    }
+                                if (GameStage.getGameLevel() % 4 == 2)
+                                    if (timer != 2)
+                                        createEnemy(2);
+                                    else {
+                                        createEnemy(2);
+                                        enemies.get(enemies.size() - 1).setHealthPoints(10);
+                                        enemies.get(enemies.size() - 1).setSpeed(enemies.get(enemies.size() - 1).getSpeed() + 2);
+                                    }
+                                if (GameStage.getGameLevel() % 4 == 3)
+                                    if (timer != 2)
+                                        createEnemy(3);
+                                    else {
+                                        createEnemy(3);
+                                        enemies.get(enemies.size() - 1).setHealthPoints(10);
+                                        enemies.get(enemies.size() - 1).setSpeed(enemies.get(enemies.size() - 1).getSpeed() + 2);
+                                    }
+                                if (GameStage.getGameLevel() % 4 == 0 && timer % 4 == 0)
+                                    if (timer != 2)
+                                        createEnemy(4);
+                                    else {
+                                        createEnemy(4);
+                                        enemies.get(enemies.size() - 1).setHealthPoints(30);
+                                        enemies.get(enemies.size() - 1).setSpeed(enemies.get(enemies.size() - 1).getSpeed() + 3);
+                                    }
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                     } else if (timer <= 0) {
                         GameStage.setGameLevel(1);
+
                         timer = 29;
                     }
                 }
@@ -530,7 +563,7 @@ public class GameField {
                     imageViewNextWaveStart.setVisible(false);
                 });
 
-                if(autoplay){
+                if (autoplay) {
                     try {
                         putNewTower();
                     } catch (FileNotFoundException e) {

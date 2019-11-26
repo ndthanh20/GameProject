@@ -13,7 +13,7 @@ public class MachineGunTower extends Tower {
 
     public MachineGunTower(double x, double y) throws FileNotFoundException {
         super(x, y);
-        setDamage(1);
+        setDamage(15);
         setShootRange(150);
         setShootSpeed(60);
         setImageView();

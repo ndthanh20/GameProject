@@ -26,7 +26,7 @@ public abstract class Enemy extends GameEntity {
     private boolean upY = true;
     private boolean pathFinished = false;
 
-    private int healthPoints;                   // Determines if the monster is still alive
+    protected int healthPoints;                   // Determines if the monster is still alive
     private boolean isDead;
     private boolean isPathFinished;
 
@@ -35,8 +35,8 @@ public abstract class Enemy extends GameEntity {
     protected int armor;
     protected ImageView enemyImage;
 
-    private Coordinate spawnerC;
-    private Coordinate targetC;
+    protected Coordinate spawnerC;
+    protected Coordinate targetC;
 
     private Rectangle healthBar;
 
@@ -46,21 +46,6 @@ public abstract class Enemy extends GameEntity {
         isDead = false;
         isPathFinished = false;
 
-        Spawner spawner = new Spawner();
-        spawnerC= Spawner.getSpawner();
-
-
-        Target target = new Target();
-
-        targetC = target.getTarget();
-
-
-        setImageView();
-
-        enemyImage.setX(spawnerC.getX());
-        enemyImage.setY(spawnerC.getY());
-
-        setHealthBar(new Rectangle(30,10, Color.GREEN));
 
     }
 
@@ -159,17 +144,7 @@ public abstract class Enemy extends GameEntity {
         }
     }
 
-    public void drawHealthBar() {
-
-        if (this.getHealthPoints() == 1) {
-            this.setHealthBar(10);
-            return;
-        }
-        if (this.getHealthPoints() == 2) {
-            this.setHealthBar(20);
-            return;
-        }
-    }
+    public abstract void drawHealthBar();
 
     public abstract void setSpeed(int speed);
 
@@ -182,6 +157,9 @@ public abstract class Enemy extends GameEntity {
     public abstract void setArmor(int armor);
 
     public abstract int getArmor();
+
+    public abstract void setHealthPoints(int t);
+
 
 
     public void takeDamage(int damage) {
