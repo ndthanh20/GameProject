@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 
 public class NormalTower extends Tower {
 
-    private final String url= new String("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Tower1.PNG");
+    private final String url= new String("D:\\Java-game\\GameRepository\\src\\game\\images\\Tower1.PNG");
 
     public NormalTower(double x, double y) throws FileNotFoundException {
         super(x, y);

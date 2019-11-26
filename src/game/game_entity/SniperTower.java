@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class SniperTower extends Tower {
-    private final String url= new String("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Tower2.PNG");
+    private final String url= new String("D:\\Java-game\\GameRepository\\src\\game\\images\\Tower2.PNG");
 
     public SniperTower(double x, double y) throws FileNotFoundException {
         super(x, y);

@@ -14,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -24,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 
 
+import java.io.File;
 import java.io.FileInputStream;
 
 import javafx.scene.control.Button;
@@ -39,11 +42,13 @@ public class GameField {
     private ArrayList<Tower> towers = new ArrayList<Tower>();
     private Scene gameScene;
     private Group group = new Group();
+    private MediaPlayer mediaPlayerGun;
     private boolean checkSelect = true;
     private ArrayList<ImageView> child = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
 
     private int Money;
+    private Text Health;
 
     private Road road = new Road();
     private int indexGroup;
@@ -60,7 +65,7 @@ public class GameField {
 
 
     public void startGame() throws FileNotFoundException {
-        Image imageGame = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\StartGameGraphic.png"));
+        Image imageGame = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\StartGameGraphic.png"));
         ImageView imageViewGame = new ImageView(imageGame);
 
         imageViewGame.setFitHeight(1050);
@@ -69,7 +74,7 @@ public class GameField {
 
         group = new Group(imageViewGame);
 
-        Image imageStartGame = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\StartGameButton.png"));
+        Image imageStartGame = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\StartGameButton.png"));
 
         ImageView imageViewStartGame = new ImageView(imageStartGame);
 
@@ -94,7 +99,7 @@ public class GameField {
     }
 
     public void initialize() throws FileNotFoundException {
-        Image image = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Background1.png"));
+        Image image = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\Background1.png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(1050);
         imageView.setFitWidth(1312);
@@ -103,20 +108,33 @@ public class GameField {
 
         road.loadRoad(group);
 
-        Image imageSelect = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\TileSelectGraphic.png"));
+        Image imageSelect = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\TileSelectGraphic.png"));
         ImageView imageViewSelect = new ImageView(imageSelect);
 
-        Image imageBasicSniper = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Tower1.png"));
+        Image imageBasicSniper = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\Tower1.png"));
         ImageView imageViewBasicSniper = new ImageView(imageBasicSniper);
         imageViewBasicSniper.setX(955);
         imageViewBasicSniper.setY(140);
         imageViewBasicSniper.setFitHeight(100);
         imageViewBasicSniper.setFitWidth(100);
         group.getChildren().addAll(imageViewBasicSniper);
+        //image health
+        Image imageHealthPlayer = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\Heart.png"));
+        ImageView imageViewHealthPlayer = new ImageView(imageHealthPlayer);
+        imageViewHealthPlayer.setX(200);
+        imageViewHealthPlayer.setY(930);
+        imageViewHealthPlayer.setFitHeight(70);
+        imageViewHealthPlayer.setFitWidth(100);
+        group.getChildren().addAll(imageViewHealthPlayer);
 
+        Health = new Text(320, 980, String.valueOf(GameStage.getPlayerHealth()));
+        Health.setFill(YELLOW);
+        Health.setFont(Font.font(java.awt.Font.SERIF, 60));
+
+        group.getChildren().add(Health);
 
         //image tower 2 //
-        Image imageTower2 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Tower2.png"));
+        Image imageTower2 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\Tower2.png"));
         ImageView imageViewTower2 = new ImageView(imageTower2);
         imageViewTower2.setX(1140);
         imageViewTower2.setY(140);
@@ -125,7 +143,7 @@ public class GameField {
         group.getChildren().addAll(imageViewTower2);
 
         //image tower3
-        Image imageTower3 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Tower3.png"));
+        Image imageTower3 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\Tower3.png"));
         ImageView imageViewTower3 = new ImageView(imageTower3);
         imageViewTower3.setX(956);
         imageViewTower3.setY(297);
@@ -134,7 +152,7 @@ public class GameField {
         group.getChildren().addAll(imageViewTower3);
 
         //image StartWave
-        Image imageNextWaveStart = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\nextWaveActive.png"));
+        Image imageNextWaveStart = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\nextWaveActive.png"));
         imageViewNextWaveStart = new ImageView(imageNextWaveStart);
         imageViewNextWaveStart.setX(700);
         imageViewNextWaveStart.setY(920);
@@ -142,7 +160,7 @@ public class GameField {
         imageViewNextWaveStart.setFitWidth(200);
         group.getChildren().addAll(imageViewNextWaveStart);
 
-        Image imageAutoPlay = new Image((new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\AutoPlay.png")));
+        Image imageAutoPlay = new Image((new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\AutoPlay.png")));
         AutoPlay = new ImageView(imageAutoPlay);
         AutoPlay.setX(1000);
         AutoPlay.setY(910);
@@ -153,13 +171,13 @@ public class GameField {
 
         //image Wave
 
-        Image waveImage = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\WaveGraphic.PNG"));
+        Image waveImage = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\WaveGraphic.PNG"));
         ImageView waveImageView = new ImageView(waveImage);
-        waveImageView.setX(400);
+        waveImageView.setX(450);
         waveImageView.setY(920);
         group.getChildren().add(waveImageView);
 
-        wave = new Text(490, 965, String.valueOf(GameStage.getGameLevel()));
+        wave = new Text(535, 965, String.valueOf(GameStage.getGameLevel()));
         wave.setFill(GREEN);
         wave.setFont(Font.font(java.awt.Font.SERIF, 35));
 
@@ -167,7 +185,7 @@ public class GameField {
 
 
         // image currency
-        Image imageCurrency = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\CurrencyGraphic.png"));
+        Image imageCurrency = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\CurrencyGraphic.png"));
         ImageView imageViewCurrency = new ImageView(imageCurrency);
         imageViewCurrency.setX(0);
         imageViewCurrency.setY(920);
@@ -183,7 +201,7 @@ public class GameField {
 
         group.getChildren().addAll(money);
 
-        Image exitImage = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\ExitPointGraphic.PNG"));
+        Image exitImage = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\ExitPointGraphic.PNG"));
         ImageView exitImageView = new ImageView(exitImage);
         exitImageView.setX(1200);
         exitImageView.setY(700);
@@ -354,6 +372,16 @@ public class GameField {
             event.setDropCompleted(success);
             event.consume();
         });
+
+    }
+    public void playSoundGun(){
+
+        String path = "D:\\Java-game\\GameRepository\\src\\game\\Sound\\GunSound.mp3";
+
+        Media media = new Media(new File(path).toURI().toString());
+
+        mediaPlayerGun = new MediaPlayer(media);
+        mediaPlayerGun.play();
 
     }
 

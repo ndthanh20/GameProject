@@ -21,9 +21,19 @@ import java.io.FileNotFoundException;
 public class GameStage {
     private static Stage gameStage;
     private static int gameLevel=0;
+    private static int playerHealth = 5;
     public static void setStage(Stage stage){
         gameStage=stage;
     }
+
+    public static int getPlayerHealth() {
+        return playerHealth;
+    }
+
+    public static void setPlayerHealth(int playerHealth) {
+        GameStage.playerHealth = playerHealth;
+    }
+
     public static Stage getStage(){
         return gameStage;
     }

@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class BossEnemy extends Enemy {
-    private final String url = new String("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\BossEnemy.png");
+    private final String url = new String("D:\\Java-game\\GameRepository\\src\\game\\images\\BossEnemy.png");
     public BossEnemy(int healthPoints) throws FileNotFoundException {
         super(healthPoints);
         setSpeed(2);

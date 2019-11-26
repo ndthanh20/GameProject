@@ -16,6 +16,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.stage.Stage;
@@ -32,6 +34,7 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.util.Duration;
 import sun.plugin.javascript.navig.Anchor;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ public class Main extends Application {
     private int[][] map;
     private Group group = new Group();
     private ArrayList<Tower> towers = new ArrayList<Tower>();
-
+    private MediaPlayer mediaPlayer;
     private GameField gameField = new GameField();
 
     public Main() throws FileNotFoundException {
@@ -71,6 +74,8 @@ public class Main extends Application {
 
 
         gameField.startGame();
+        playMusic();
+
         primaryStage.setScene(gameField.getGameScene());
 
 
@@ -83,6 +88,16 @@ public class Main extends Application {
 
         GameStage.setStage(primaryStage);
 
+    }
+    public void playMusic(){
+
+        String path = "D:\\Java-game\\GameRepository\\src\\game\\Sound\\Sound.mp3";
+
+        Media media = new Media(new File(path).toURI().toString());
+
+        mediaPlayer = new MediaPlayer(media);
+
+        mediaPlayer.play();
     }
 
     public static void main(String[] args) {

@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 
 public class NormalEnemy extends Enemy {
 
-    private final String url = new String("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Enemy1.png");
+    private final String url = new String("D:\\Java-game\\GameRepository\\src\\game\\images\\Enemy1.png");
 
     public NormalEnemy(int healthPoints) throws FileNotFoundException {
         super(healthPoints);

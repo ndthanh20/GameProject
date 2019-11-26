@@ -24,7 +24,7 @@ public class Road extends Map {
         for (int i = 0; i <= 9; i++) {
             for (int j = 0; j <= 11; j++)
                 if (map[i][j] == 1) {
-                    Image image3 = new Image(new FileInputStream("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\GravelTile.png"));
+                    Image image3 = new Image(new FileInputStream("D:\\Java-game\\GameRepository\\src\\game\\images\\GravelTile.png"));
                     javafx.scene.image.ImageView imageView3 = new javafx.scene.image.ImageView(image3);
 
                     imageView3.setX(j * 100);

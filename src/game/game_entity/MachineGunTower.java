@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 
 public class MachineGunTower extends Tower {
 
-    private final String url= new String("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Tower3.PNG");
+    private final String url= new String("D:\\Java-game\\GameRepository\\src\\game\\images\\Tower3.PNG");
 
 
     public MachineGunTower(double x, double y) throws FileNotFoundException {

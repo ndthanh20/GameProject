@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class SmallerEnemy extends Enemy{
-    private static String url = new String("C:\\Users\\ndtha\\GameProject\\src\\game\\images\\Enemy2.png");
+    private static String url = new String("D:\\Java-game\\GameRepository\\src\\game\\images\\Enemy2.png");
     public SmallerEnemy(int healthPoints) throws FileNotFoundException {
         super(healthPoints);
         setImageView();
